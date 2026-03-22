@@ -1,19 +1,15 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
-// Definição das telas para evitar erros de digitação
 export type Tela = 'inicio' | 'fases' | 'resultados';
 
 interface JogoState {
-  // Dados do Aluno
   nome: string;
   pontuacao: number;
-  
-  // Controle de Navegação
   telaAtiva: Tela;
   faseAtual: number;
   
-  // Ações (Actions)
+  // Ações
   setNome: (nome: string) => void;
   setTela: (tela: Tela) => void;
   adicionarPontos: (pontos: number) => void;
@@ -24,26 +20,37 @@ interface JogoState {
 export const useJogoStore = create<JogoState>()(
   persist(
     (set) => ({
+      // Estados Iniciais
       nome: '',
       pontuacao: 0,
       telaAtiva: 'inicio',
       faseAtual: 1,
 
-      setNome: (nome) => set({ nome: nome.toUpperCase() }),
+      // Setters Diretos
+      setNome: (nome) => set({ nome: nome.trim().toUpperCase() }),
       
       setTela: (tela) => set({ telaAtiva: tela }),
 
+      // Lógica de Acúmulo
       adicionarPontos: (pontos) => 
         set((state) => ({ pontuacao: state.pontuacao + pontos })),
 
       avancarFase: () => 
         set((state) => ({ faseAtual: state.faseAtual + 1 })),
 
+      // Reset Completo do Estado
       resetarJogo: () => 
-        set({ nome: '', pontuacao: 0, telaAtiva: 'inicio', faseAtual: 1 }),
+        set({ 
+          nome: '', 
+          pontuacao: 0, 
+          telaAtiva: 'inicio', 
+          faseAtual: 1 
+        }),
     }),
     {
-      name: 'terminal-binario-storage', // Nome da chave no localStorage
+      name: 'terminal-binario-storage',
+      // Opcional: define explicitamente o storage para evitar erros de hidratação no Next.js
+      storage: createJSONStorage(() => localStorage), 
     }
   )
 );

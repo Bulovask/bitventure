@@ -3,57 +3,90 @@
 import { useJogoStore } from "@/store/useGameStore";
 import PuzzleBinario from "@/components/PuzzleBinario";
 import { useCallback } from "react";
+import { TerminalHeader, TerminalButton } from "@/components/UI";
+import PuzzleDecimal from "@/components/PuzzleDecimal";
+import PuzzlePotencias from "@/components/PuzzlePotencias";
 
 export default function Fases() {
-  const nomeAluno = useJogoStore((state) => state.nome);
-  const faseAtual = useJogoStore((state) => state.faseAtual);
-  const avancarFaseStore = useJogoStore((state) => state.avancarFase);
-  const adicionarPontos = useJogoStore((state) => state.adicionarPontos);
-  const setTela = useJogoStore((state) => state.setTela);
+  const {
+    nome: nomeAluno,
+    faseAtual,
+    avancarFase: avancarFaseStore,
+    adicionarPontos,
+    setTela,
+  } = useJogoStore();
 
   const TOTAL_FASES = 4;
 
-  const handleAcerto = useCallback(() => {
-    adicionarPontos(10);
-    if (faseAtual < TOTAL_FASES) {
-      avancarFaseStore();
-    } else {
-      setTela("resultados");
-    }
-  }, [faseAtual, adicionarPontos, avancarFaseStore, setTela]);
+  const handleAcerto = useCallback(
+    (pontos: number = 10) => {
+      adicionarPontos(pontos);
+      if (faseAtual < TOTAL_FASES) {
+        avancarFaseStore();
+      } else {
+        setTela("resultados");
+      }
+    },
+    [faseAtual, adicionarPontos, avancarFaseStore, setTela],
+  );
 
   return (
-    <div className="py-4 font-mono">
-      <header className="flex justify-between border-b border-green-500/30 pb-2 mb-6 text-xs md:text-sm">
-        <span className="text-green-700">
-          OPERADOR: <span className="text-green-400">{nomeAluno}</span>
-        </span>
-        <span className="text-green-700">
-          PROTOCOLO: <span className="text-green-400">{faseAtual}/{TOTAL_FASES}</span>
-        </span>
-      </header>
+    <div className="py-4 font-mono select-none">
+      <TerminalHeader
+        items={[
+          { label: "OPERADOR", value: nomeAluno || "ANÔNIMO" },
+          { label: "PROTOCOLO_SYNC", value: `${faseAtual}/${TOTAL_FASES}` },
+        ]}
+      />
 
-      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-        {/* Renderização DIRETA no corpo do return */}
+      <div className="animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out">
+        {/* FASE 1: Aprender a Somar */}
         {faseAtual === 1 && (
           <PuzzleBinario
-            key="fase-1-puzzle"
-            numeroObjetivo={50}
-            onAcerto={handleAcerto}
+            numeroObjetivo={10}
+            onAcerto={() => handleAcerto(10)}
           />
         )}
 
-        {faseAtual >= 2 && faseAtual <= TOTAL_FASES && (
-          <div className="flex flex-col items-center gap-4 py-10" key={`fase-auto-${faseAtual}`}>
-            <p className="text-green-700 font-mono text-sm italic text-center">
-              [ SISTEMA: DESAFIO_LEVEL_{faseAtual}_PENDENTE ]
+        {/* FASE 2: Aprender a Ler */}
+        {faseAtual === 2 && (
+          <PuzzleDecimal
+            numeroObjetivo={20}
+            onAcerto={() => handleAcerto(10)}
+          />
+        )}
+
+        {/* FASE 3: Aprender as Potências (A base de tudo!) */}
+        {faseAtual === 3 && (
+          <PuzzlePotencias
+            numeroObjetivo={100}
+            onAcerto={() => handleAcerto(30)}
+          />
+        )}
+
+        {/* Placeholder para Fases Futuras */}
+        {faseAtual >= 4 && faseAtual <= TOTAL_FASES && (
+          <div
+            className="flex flex-col items-center gap-6 py-12 border border-dashed border-green-900/50 rounded-lg bg-green-500/5"
+            key={`fase-auto-${faseAtual}`}
+          >
+            <div className="space-y-1 text-center">
+              <p className="text-green-500 font-bold text-lg uppercase">
+                [ DESAFIO_LEVEL_0{faseAtual} ]
+              </p>
+              <p className="text-green-900 text-[10px] uppercase tracking-[0.2em]">
+                Status: Aguardando injeção de pacotes...
+              </p>
+            </div>
+
+            <TerminalButton
+              label={`SIMULAR_DECODIFICAÇÃO_0${faseAtual}`}
+              onClick={() => handleAcerto(0)}
+            />
+
+            <p className="text-green-900 text-[9px] italic">
+              * Clique para pular esta fase durante os testes de integração.
             </p>
-            <button
-              onClick={handleAcerto}
-              className="border border-green-500 px-6 py-2 hover:bg-green-500 hover:text-black transition-all font-bold"
-            >
-              SIMULAR_DECODIFICAÇÃO_FASE_{faseAtual}()
-            </button>
           </div>
         )}
       </div>
