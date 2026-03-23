@@ -1,2 +1,2 @@
-:HL["/bitventure/_next/static/chunks/0d7f5j_rlr~dd.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"HQaRvBKkEi_ON9ajWpzw_"}
+:HL["/bitventure/_next/static/chunks/0k2_c~cprr.59.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"5zedHfVy_ldtc3R7grjKC"}
