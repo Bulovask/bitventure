@@ -28,7 +28,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const TerminalButton = ({ label, className, ...props }: ButtonProps) => (
   <button
     {...props}
-    className={`group relative overflow-hidden border border-green-500 px-10 py-3 font-bold text-green-500 hover:text-green-950 transition-colors duration-300 ${className}`}
+    className={`group relative overflow-hidden border border-green-500 px-10 py-2 font-bold text-green-500 hover:text-green-950 transition-colors duration-300 ${className}`}
   >
     <div className="absolute inset-0 bg-green-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
     <span className="relative z-10 uppercase">[ {label} ]</span>
@@ -48,7 +48,7 @@ export const StatusBadge = ({ success, label }: { success: boolean; label: strin
 
 // 5. Container de Informação (Usado para Operador e Score)
 export const InfoBlock = ({ label, value, highlight = false }: { label: string; value: string | number; highlight?: boolean }) => (
-  <div className={`min-w-0 ${highlight ? 'w-fit bg-green-900/10 p-3 border border-green-900/30 rounded-sm' : 'border-l-2 border-green-500 pl-4'}`}>
+  <div className={`min-w-0 ${highlight ? 'w-fit bg-green-900/10 p-2 border border-green-900/30 rounded-sm' : 'border-l-2 border-green-500 pl-4'}`}>
     <span className="text-[10px] text-green-800 uppercase font-bold tracking-widest block mb-1">
       {label}
     </span>
@@ -60,7 +60,7 @@ export const InfoBlock = ({ label, value, highlight = false }: { label: string; 
 
 // 6. Header de Status Superior
 export const TerminalHeader = ({ items }: { items: { label: string; value: string | number }[] }) => (
-  <header className="flex justify-between border-b border-green-500/30 pb-2 mb-8 text-[10px] md:text-xs tracking-widest uppercase">
+  <header className="flex justify-between border-b border-green-500/30 pb-1 mb-1 text-[10px] md:text-xs tracking-widest uppercase">
     {items.map((item, i) => (
       <div key={i} className="flex gap-2">
         <span className="text-green-800">{item.label}:</span>

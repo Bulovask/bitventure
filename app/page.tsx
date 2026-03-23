@@ -9,8 +9,8 @@ export default function Home() {
   const tela = useJogoStore((state) => state.telaAtiva);
 
   return (
-    <main className="min-h-screen bg-black text-green-400 font-mono p-4 md:p-8 select-none">
-      <div className="max-w-4xl mx-auto border-2 border-green-500/30 p-4 md:p-6 rounded-lg shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+    <main className="min-h-screen bg-black text-green-400 font-mono p-3 md:p-3 select-none flex justify-center items-center">
+      <div className="min-w-3xl mx-auto border-2 border-green-500/30 p-3 md:p-3 rounded-lg shadow-[0_0_15px_rgba(34,197,94,0.2)]">
         {/* Renderização direta: mais limpa e performática */}
         {tela === "inicio" && <Inicio />}
         {tela === "fases" && <Fases />}

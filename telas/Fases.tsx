@@ -2,36 +2,46 @@
 
 import { useJogoStore } from "@/store/useGameStore";
 import PuzzleBinario from "@/components/PuzzleBinario";
-import { useCallback } from "react";
-import { TerminalHeader, TerminalButton } from "@/components/UI";
+import { useCallback, useState } from "react";
+import { TerminalHeader } from "@/components/UI";
 import PuzzleDecimal from "@/components/PuzzleDecimal";
 import PuzzlePotencias from "@/components/PuzzlePotencias";
+import PuzzleASCII from "@/components/PuzzleASCII";
+import ASCIITable, { ButtonASCIITableModal } from "@/components/ASCIITable";
+import PuzzleReverseASCII from "@/components/PuzzleReverseASCII";
 
 export default function Fases() {
-  const {
-    nome: nomeAluno,
-    faseAtual,
-    avancarFase: avancarFaseStore,
-    adicionarPontos,
-    setTela,
-  } = useJogoStore();
+  const [modalAberto, setModalAberto] = useState(false);
+  const { nome: nomeAluno, faseAtual, registrarFase, setTela } = useJogoStore();
 
-  const TOTAL_FASES = 4;
+  const TOTAL_FASES = 6;
 
   const handleAcerto = useCallback(
-    (pontos: number = 10) => {
-      adicionarPontos(pontos);
-      if (faseAtual < TOTAL_FASES) {
-        avancarFaseStore();
-      } else {
+    (basePontos: number = 50, tempoMs: number, erros: number) => {
+      // Cálculo de Bônus de Velocidade (ex: bônus se fizer em menos de 20s)
+      const bonusVelocidade = Math.max(0, 20 - Math.floor(tempoMs / 1000));
+
+      // Penalidade por erros cometidos nessa fase
+      const penalidade = erros * 5;
+
+      const pontuacaoFinal = Math.max(
+        10,
+        basePontos + bonusVelocidade - penalidade,
+      );
+
+      // Registra na Store: pontos, tempo gasto e se o aluno errou alguma vez
+      registrarFase(pontuacaoFinal, tempoMs, erros > 0);
+
+      // Verifica se era a última fase
+      if (faseAtual >= TOTAL_FASES) {
         setTela("resultados");
       }
     },
-    [faseAtual, adicionarPontos, avancarFaseStore, setTela],
+    [faseAtual, registrarFase, setTela],
   );
 
   return (
-    <div className="py-4 font-mono select-none">
+    <div className="py-1 font-mono select-none">
       <TerminalHeader
         items={[
           { label: "OPERADOR", value: nomeAluno || "ANÔNIMO" },
@@ -39,57 +49,36 @@ export default function Fases() {
         ]}
       />
 
+      <div className="fixed bottom-2 right-2">
+        <ButtonASCIITableModal onClick={() => setModalAberto(true)} />
+      </div>
+
       <div className="animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out">
-        {/* FASE 1: Aprender a Somar */}
         {faseAtual === 1 && (
-          <PuzzleBinario
-            numeroObjetivo={10}
-            onAcerto={() => handleAcerto(10)}
-          />
+          <PuzzleBinario numeroObjetivo={10} onAcerto={handleAcerto} />
         )}
 
-        {/* FASE 2: Aprender a Ler */}
         {faseAtual === 2 && (
-          <PuzzleDecimal
-            numeroObjetivo={20}
-            onAcerto={() => handleAcerto(10)}
-          />
+          <PuzzleDecimal numeroObjetivo={20} onAcerto={handleAcerto} />
         )}
 
-        {/* FASE 3: Aprender as Potências (A base de tudo!) */}
         {faseAtual === 3 && (
-          <PuzzlePotencias
-            numeroObjetivo={100}
-            onAcerto={() => handleAcerto(30)}
-          />
+          <PuzzlePotencias numeroObjetivo={100} onAcerto={handleAcerto} />
         )}
 
-        {/* Placeholder para Fases Futuras */}
-        {faseAtual >= 4 && faseAtual <= TOTAL_FASES && (
-          <div
-            className="flex flex-col items-center gap-6 py-12 border border-dashed border-green-900/50 rounded-lg bg-green-500/5"
-            key={`fase-auto-${faseAtual}`}
-          >
-            <div className="space-y-1 text-center">
-              <p className="text-green-500 font-bold text-lg uppercase">
-                [ DESAFIO_LEVEL_0{faseAtual} ]
-              </p>
-              <p className="text-green-900 text-[10px] uppercase tracking-[0.2em]">
-                Status: Aguardando injeção de pacotes...
-              </p>
-            </div>
+        {faseAtual === 4 && (
+          <PuzzleASCII onAcerto={handleAcerto} letraObjetivo={"3"} />
+        )}
 
-            <TerminalButton
-              label={`SIMULAR_DECODIFICAÇÃO_0${faseAtual}`}
-              onClick={() => handleAcerto(0)}
-            />
+        {faseAtual === 5 && (
+          <PuzzleReverseASCII letraObjetivo="D" onAcerto={handleAcerto} />
+        )}
 
-            <p className="text-green-900 text-[9px] italic">
-              * Clique para pular esta fase durante os testes de integração.
-            </p>
-          </div>
+        {faseAtual === 6 && (
+          <PuzzleReverseASCII letraObjetivo="M" onAcerto={handleAcerto} />
         )}
       </div>
+      <ASCIITable isOpen={modalAberto} onClose={() => setModalAberto(false)} />
     </div>
   );
 }

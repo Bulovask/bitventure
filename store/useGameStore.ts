@@ -8,48 +8,52 @@ interface JogoState {
   pontuacao: number;
   telaAtiva: Tela;
   faseAtual: number;
+  tempoTotal: number; // Tempo acumulado em ms
+  respostas: number[]; // Ex: [1, 0, 1] -> 1: Acerto Direto, 0: Teve Erros
   
   // Ações
   setNome: (nome: string) => void;
   setTela: (tela: Tela) => void;
-  adicionarPontos: (pontos: number) => void;
-  avancarFase: () => void;
+  // Agora passamos pontos, tempo da fase e se houve erro
+  registrarFase: (pontos: number, tempoFase: number, houveErro: boolean) => void;
   resetarJogo: () => void;
 }
 
 export const useJogoStore = create<JogoState>()(
   persist(
     (set) => ({
-      // Estados Iniciais
       nome: '',
       pontuacao: 0,
       telaAtiva: 'inicio',
       faseAtual: 1,
+      tempoTotal: 0,
+      respostas: [],
 
-      // Setters Diretos
       setNome: (nome) => set({ nome: nome.trim().toUpperCase() }),
       
       setTela: (tela) => set({ telaAtiva: tela }),
 
-      // Lógica de Acúmulo
-      adicionarPontos: (pontos) => 
-        set((state) => ({ pontuacao: state.pontuacao + pontos })),
+      // Lógica Centralizada de Registro
+      registrarFase: (pontos, tempoFase, houveErro) => 
+        set((state) => ({ 
+          pontuacao: state.pontuacao + pontos,
+          tempoTotal: state.tempoTotal + tempoFase,
+          respostas: [...state.respostas, houveErro ? 0 : 1],
+          faseAtual: state.faseAtual + 1
+        })),
 
-      avancarFase: () => 
-        set((state) => ({ faseAtual: state.faseAtual + 1 })),
-
-      // Reset Completo do Estado
       resetarJogo: () => 
         set({ 
           nome: '', 
           pontuacao: 0, 
           telaAtiva: 'inicio', 
-          faseAtual: 1 
+          faseAtual: 1,
+          tempoTotal: 0,
+          respostas: []
         }),
     }),
     {
       name: 'terminal-binario-storage',
-      // Opcional: define explicitamente o storage para evitar erros de hidratação no Next.js
       storage: createJSONStorage(() => localStorage), 
     }
   )

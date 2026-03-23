@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "predeploy": "npm run build",
-    "deploy": "echo. > out/.nojekyll && gh-pages -d out"
+    "deploy": "node -e \"require('fs').writeFileSync('out/.nojekyll', '')\" && gh-pages -t -d out"
   },
   "dependencies": {
     "next": "16.2.0",
