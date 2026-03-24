@@ -8,11 +8,13 @@ interface PuzzleProps {
   numeroObjetivo: number;
   onAcerto: (basePontos: number, tempoMs: number, erros: number) => void;
   mostrarDica?: boolean;
+  pontos: number;
 }
 
 export default function PuzzleDecimal({
   numeroObjetivo,
   onAcerto,
+  pontos,
   mostrarDica = true,
 }: PuzzleProps) {
   // 1. Pegamos 'erros' para controlar o limite de 3
@@ -43,7 +45,7 @@ export default function PuzzleDecimal({
     if (parseInt(inputValor) === numeroObjetivo) {
       setSucesso(true);
       setErro(false);
-      setTimeout(() => finalizarRef.current(40), 1500);
+      setTimeout(() => finalizarRef.current(pontos), 1500);
     } else {
       registrarErro();
       setErro(true);

@@ -7,9 +7,10 @@ import { useFaseLogic } from '@/hooks/useFaseLogic';
 interface Props {
   letraObjetivo: string;
   onAcerto: (basePontos: number, tempoMs: number, erros: number) => void;
+  pontos: number;
 }
 
-export default function PuzzleASCII({ letraObjetivo, onAcerto }: Props) {
+export default function PuzzleASCII({ letraObjetivo, onAcerto, pontos }: Props) {
   // 1. Pegamos 'erros' para controlar o limite
   const { erros, registrarErro, finalizarFase } = useFaseLogic(onAcerto);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,7 +41,7 @@ export default function PuzzleASCII({ letraObjetivo, onAcerto }: Props) {
     if (inputChar.toUpperCase() === letraObjetivo.toUpperCase()) {
       setSucesso(true);
       setErro(false);
-      setTimeout(() => finalizarRef.current(60), 1500); 
+      setTimeout(() => finalizarRef.current(pontos), 1500); 
     } else {
       // 2. Registra o erro e verifica o limite de 3
       registrarErro(); 

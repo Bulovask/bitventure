@@ -6,9 +6,10 @@ import { useState, useEffect, useMemo, useRef } from "react";
 interface Props {
   letraObjetivo: string;
   onAcerto: (basePontos: number, tempoMs: number, erros: number) => void;
+  pontos: number;
 }
 
-export default function PuzzleReverseASCII({ letraObjetivo, onAcerto }: Props) {
+export default function PuzzleReverseASCII({ letraObjetivo, onAcerto, pontos }: Props) {
   const { erros, registrarErro, finalizarFase } = useFaseLogic(onAcerto);
   const [bits, setBits] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
   const [sucesso, setSucesso] = useState(false);
@@ -40,7 +41,7 @@ export default function PuzzleReverseASCII({ letraObjetivo, onAcerto }: Props) {
     // 1. Verificação de Vitória
     if (somaAtual === decimalObjetivo && somaAtual !== 0 && !sucesso) {
       setSucesso(true);
-      setTimeout(() => finalizarRef.current(60), 1500);
+      setTimeout(() => finalizarRef.current(pontos), 1500);
       return;
     }
 

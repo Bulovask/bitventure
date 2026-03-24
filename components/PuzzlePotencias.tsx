@@ -6,9 +6,10 @@ import { useState, useEffect, useMemo, useRef } from "react";
 interface Props {
   numeroObjetivo: number;
   onAcerto: (basePontos: number, tempoMs: number, erros: number) => void;
+  pontos: number;
 }
 
-export default function PuzzlePotencias({ numeroObjetivo, onAcerto }: Props) {
+export default function PuzzlePotencias({ numeroObjetivo, onAcerto, pontos }: Props) {
   // Pegamos 'erros' do hook para monitorar o limite
   const { erros, registrarErro, finalizarFase } = useFaseLogic(onAcerto);
   const [bits, setBits] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
@@ -43,7 +44,7 @@ export default function PuzzlePotencias({ numeroObjetivo, onAcerto }: Props) {
     if (somaAtual === numeroObjetivo && somaAtual !== 0 && !sucesso) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSucesso(true);
-      setTimeout(() => finalizarRef.current(50), 1500);
+      setTimeout(() => finalizarRef.current(pontos), 1500);
       return;
     }
 

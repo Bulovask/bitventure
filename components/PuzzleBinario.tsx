@@ -6,9 +6,10 @@ import { useState, useEffect, useRef } from "react";
 interface PuzzleProps {
   numeroObjetivo: number;
   onAcerto: (basePontos: number, tempoMs: number, erros: number) => void;
+  pontos: number;
 }
 
-export default function PuzzleBinario({ numeroObjetivo, onAcerto }: PuzzleProps) {
+export default function PuzzleBinario({ numeroObjetivo, onAcerto, pontos }: PuzzleProps) {
   const { erros, registrarErro, finalizarFase } = useFaseLogic(onAcerto);
   const [bits, setBits] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
   const [sucesso, setSucesso] = useState(false);
@@ -40,7 +41,7 @@ export default function PuzzleBinario({ numeroObjetivo, onAcerto }: PuzzleProps)
     // 1. Lógica de Vitória
     if (somaAtual === numeroObjetivo && somaAtual !== 0 && !sucesso) {
       setSucesso(true);
-      setTimeout(() => finalizarRef.current(50), 1500);
+      setTimeout(() => finalizarRef.current(pontos), 1500);
       return;
     }
 
