@@ -41,7 +41,7 @@ export default function Boot() {
         </div>
       </div>
 
-      <div className="w-full max-w-xs px-4">
+      <div className="w-full max-w-xl px-4">
         <TerminalButton 
           label="INICIALIZAR_SISTEMA" 
           onClick={iniciarSistema}
