@@ -8,13 +8,15 @@ interface JogoState {
   pontuacao: number;
   telaAtiva: Tela;
   faseAtual: number;
-  tempoTotal: number; // Tempo acumulado em ms
-  respostas: number[]; // Ex: [1, 0, 1] -> 1: Acerto Direto, 0: Teve Erros
+  tempoTotal: number;
+  respostas: number[];
+  // Nova Flag de Bloqueio
+  sistemaBloqueado: boolean; 
   
   // Ações
   setNome: (nome: string) => void;
   setTela: (tela: Tela) => void;
-  // Agora passamos pontos, tempo da fase e se houve erro
+  desbloquearSistema: () => void; // Ação para o botão do Boot
   registrarFase: (pontos: number, tempoFase: number, houveErro: boolean) => void;
   resetarJogo: () => void;
 }
@@ -24,16 +26,19 @@ export const useJogoStore = create<JogoState>()(
     (set) => ({
       nome: '',
       pontuacao: 0,
-      telaAtiva: 'inicio',
+      telaAtiva: 'inicio', // O estado salvo será 'inicio', 'fases', etc.
       faseAtual: 1,
       tempoTotal: 0,
       respostas: [],
+      sistemaBloqueado: true, // Sempre inicia como true ao carregar/recarregar
 
       setNome: (nome) => set({ nome: nome.trim().toUpperCase() }),
       
       setTela: (tela) => set({ telaAtiva: tela }),
 
-      // Lógica Centralizada de Registro
+      // Chamada pelo botão da tela de Boot
+      desbloquearSistema: () => set({ sistemaBloqueado: false }),
+
       registrarFase: (pontos, tempoFase, houveErro) => 
         set((state) => ({ 
           pontuacao: state.pontuacao + pontos,
@@ -49,12 +54,19 @@ export const useJogoStore = create<JogoState>()(
           telaAtiva: 'inicio', 
           faseAtual: 1,
           tempoTotal: 0,
-          respostas: []
+          respostas: [],
+          sistemaBloqueado: false // Ao resetar, não precisa de boot de novo
         }),
     }),
     {
       name: 'terminal-binario-storage',
-      storage: createJSONStorage(() => localStorage), 
+      storage: createJSONStorage(() => localStorage),
+      // FILTRO DE PERSISTÊNCIA:
+      // Salvamos tudo no localStorage, EXCETO a flag 'sistemaBloqueado'.
+      partialize: (state) => {
+        const { sistemaBloqueado, ...rest } = state;
+        return rest;
+      },
     }
   )
 );
