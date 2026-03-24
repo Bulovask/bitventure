@@ -30,7 +30,7 @@ export default function Fases() {
       );
 
       // Registra na Store: pontos, tempo gasto e se o aluno errou alguma vez
-      registrarFase(pontuacaoFinal, tempoMs, erros > 0);
+      registrarFase(pontuacaoFinal, tempoMs, erros > 2);
 
       // Verifica se era a última fase
       if (faseAtual >= TOTAL_FASES) {
@@ -41,17 +41,13 @@ export default function Fases() {
   );
 
   return (
-    <div className="py-1 font-mono select-none">
+    <div className="py-1 font-mono">
       <TerminalHeader
         items={[
           { label: "OPERADOR", value: nomeAluno || "ANÔNIMO" },
           { label: "PROTOCOLO_SYNC", value: `${faseAtual}/${TOTAL_FASES}` },
         ]}
       />
-
-      <div className="fixed bottom-2 right-2">
-        <ButtonASCIITableModal onClick={() => setModalAberto(true)} />
-      </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out">
         {faseAtual === 1 && (
@@ -77,6 +73,10 @@ export default function Fases() {
         {faseAtual === 6 && (
           <PuzzleReverseASCII letraObjetivo="M" onAcerto={handleAcerto} />
         )}
+      </div>
+
+      <div className="fixed bottom-4 right-4">
+        <ButtonASCIITableModal onClick={() => setModalAberto(true)} />
       </div>
       <ASCIITable isOpen={modalAberto} onClose={() => setModalAberto(false)} />
     </div>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export type Tela = 'inicio' | 'fases' | 'resultados';
+export type Tela = 'boot' | 'inicio' | 'fases' | 'resultados';
 
 interface JogoState {
   nome: string;
