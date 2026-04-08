@@ -125,7 +125,7 @@ export default function PuzzleASCII({ letraObjetivo, onAcerto, pontos }: Props) 
             disabled={sucesso || (erros >= 3)}
             onChange={(e) => setInputChar(e.target.value)}
             placeholder='?'
-            className={`w-20 h-20 bg-black border-2 text-center text-5xl font-mono focus:outline-none transition-all ${
+            className={`uppercase w-20 h-20 bg-black border-2 text-center text-5xl font-mono focus:outline-none transition-all ${
               erro ? 'border-red-600 text-red-500' : 'border-blue-900 focus:border-blue-500 text-blue-400'
             } ${sucesso ? 'border-blue-400 text-white' : ''}`}
           />
